@@ -1,12 +1,17 @@
-import { TestBed } from '@angular/core/testing';
+import { HttpClient } from "@angular/common/http";
 
-import { HeroService } from './hero.service';
+import { HeroService } from "./hero.service";
+import { MessageService } from "./message.service";
 
 describe('HeroService', () => {
-  beforeEach(() => TestBed.configureTestingModule({}));
+  let heroService;
+  let messageService: MessageService;
+  let httpClient: HttpClient;
+  beforeEach(() => { heroService = new HeroService(httpClient, messageService); });
 
-  // it('should be created', () => {
-  //   const service: HeroService = TestBed.get(HeroService);
-  //   expect(service).toBeTruthy();
-  // });
+
+  it('should exist', () => {
+    expect(heroService).toBeTruthy();
+  });
 });
+
