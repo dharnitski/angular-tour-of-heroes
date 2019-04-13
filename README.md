@@ -1,5 +1,8 @@
 # AngularTourOfHeroes
 
+[![CircleCI](https://circleci.com/gh/dharnitski/angular-tour-of-heroes.svg?style=svg)](https://circleci.com/gh/dharnitski/angular-tour-of-heroes)
+[![Coverage Status](https://coveralls.io/repos/github/dharnitski/angular-tour-of-heroes/badge.svg?branch=master)](https://coveralls.io/github/dharnitski/angular-tour-of-heroes?branch=master)
+
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.3.8.
 
 ## Development server
