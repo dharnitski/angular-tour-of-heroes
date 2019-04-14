@@ -28,8 +28,7 @@ describe('DashboardComponent', () => {
       providers: [
         { provide: HeroService, useValue: heroService }
       ]
-    })
-      .compileComponents();
+    }).compileComponents();
 
   }));
 
