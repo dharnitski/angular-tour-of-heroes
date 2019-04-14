@@ -198,14 +198,14 @@ describe('HeroService', () => {
 
     it('should delete hero using hero object', () => {
       heroService.deleteHero(mockHero).subscribe(
-        response => expect(response).toEqual(mockHero.id),
+        response => expect(response).toEqual(mockHero),
         fail
       );
       // Receive DELETE request
       const req = httpTestingController.expectOne(`${heroesUrl}/${mockHero.id}`);
       expect(req.request.method).toEqual('DELETE');
       // Respond with the updated hero
-      req.flush(mockHero.id);
+      req.flush(mockHero);
 
       expect(messageService.messages.length).toEqual(1);
       expect(messageService.messages[0]).toEqual(`HeroService: deleted hero id=${mockHero.id}`);
