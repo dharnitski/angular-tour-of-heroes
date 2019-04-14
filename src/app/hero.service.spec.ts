@@ -13,11 +13,13 @@ const mockData = [
 
 describe('HeroService', () => {
 
-  let heroService;
+  let heroService: HeroService;
+  let messageService: MessageService;
   let httpTestingController: HttpTestingController;
-  let mockHeroes;
-  let mockHero;
+  let mockHeroes: Hero[];
+  let mockHero: Hero;
   let mockId;
+  const heroesUrl = 'api/heroes';
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -29,6 +31,7 @@ describe('HeroService', () => {
 
     httpTestingController = TestBed.get(HttpTestingController);
     heroService = TestBed.get(HeroService);
+    messageService = TestBed.get(MessageService);
 
     mockHeroes = [...mockData];
     mockHero = mockHeroes[0];
@@ -46,15 +49,74 @@ describe('HeroService', () => {
   describe('getHeroes', () => {
 
     it('should return mock heroes', () => {
+      const logSpy = spyOn(messageService, 'add');
+
       heroService.getHeroes().subscribe(
-        heroes => expect(heroes.length).toEqual(mockHeroes.length),
+        (heroes: Hero[]) => expect(heroes.length).toEqual(mockHeroes.length),
         fail
       );
       // Receive GET request
-      const req = httpTestingController.expectOne(heroService.heroesUrl);
+      const req = httpTestingController.expectOne(heroesUrl);
       expect(req.request.method).toEqual('GET');
       // Respond with the mock heroes
       req.flush(mockHeroes);
+
+      expect(logSpy).toHaveBeenCalledTimes(1);
+      expect(logSpy).toHaveBeenCalledWith('HeroService: fetched heroes');
+    });
+
+    it('should fail gracefully on error', () => {
+      const logSpy = spyOn(messageService, 'add');
+
+      heroService.getHero(mockHero.id).subscribe(
+        response => expect(response).toBeUndefined(),
+        fail
+      );
+      // Receive GET request
+      const req = httpTestingController.expectOne(`${heroesUrl}/${mockHero.id}`);
+      expect(req.request.method).toEqual('GET');
+      // Respond with the mock heroes
+      req.flush('Invalid request parameters', { status: 404, statusText: 'Bad Request' });
+
+      expect(logSpy).toHaveBeenCalledTimes(1);
+      expect(logSpy).toHaveBeenCalledWith(`HeroService: getHero id=${mockHero.id} failed: Http failure response for ${heroesUrl}/${mockHero.id}: 404 Bad Request`);
+    });
+  });
+
+  describe('getHero', () => {
+
+    it('should return a single mock hero', () => {
+      const logSpy = spyOn(messageService, 'add');
+
+      heroService.getHero(mockHero.id).subscribe(
+        response => expect(response).toEqual(mockHero),
+        fail
+      );
+      // Receive GET request
+      const req = httpTestingController.expectOne(`${heroesUrl}/${mockHero.id}`);
+      expect(req.request.method).toEqual('GET');
+      // Respond with the mock heroes
+      req.flush(mockHero);
+
+      expect(logSpy).toHaveBeenCalledTimes(1);
+      expect(logSpy).toHaveBeenCalledWith(`HeroService: fetched hero id=${mockHero.id}`);
+    });
+
+    it('should fail gracefully on error', () => {
+      const logSpy = spyOn(messageService, 'add');
+
+      heroService.getHero(mockHero.id).subscribe(
+        response => expect(response).toBeUndefined(),
+        fail
+      );
+      // Receive GET request
+      const req = httpTestingController.expectOne(`${heroesUrl}/${mockHero.id}`);
+      expect(req.request.method).toEqual('GET');
+      // Respond with the mock heroes
+      req.flush('Invalid request parameters', { status: 404, statusText: 'Bad Request' });
+
+      expect(logSpy).toHaveBeenCalledTimes(1);
+      expect(logSpy).toHaveBeenCalledWith(`HeroService: getHero id=${mockHero.id} failed: Http failure response for ${heroesUrl}/${mockHero.id}: 404 Bad Request`);
     });
   });
 });
